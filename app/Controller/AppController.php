@@ -67,6 +67,7 @@ class AppController extends Controller
     {
         // default access allowed for login
         $this->Auth->allow('login');
-        // if you want non-auth users to be able to add users, include that here: $this->Auth->allow('login', 'add');
+        // if you want non-auth users to be able to add users (ie. to create first user)
+            // do this: $this->Auth->allow('login', 'add');
     }
 }
