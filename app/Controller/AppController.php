@@ -27,32 +27,46 @@ App::uses('Controller', 'Controller');
  * Add your application-wide methods in the class below, your controllers
  * will inherit them.
  *
- * @package		app.Controller
- * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
+ * @package     app.Controller
+ * @link        http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
-class AppController extends Controller {
+class AppController extends Controller
+{
 
     public $components = array(
         'DebugKit.Toolbar',
         'Session',
         'Auth' => array(
-            'loginRedirect' => array(
-                'controller' => 'posts',
-                'action' => 'index'
-            ),
-            'logoutRedirect' => array(
-                'controller' => 'pages',
-                'action' => 'display',
-                'home'
-            )
+            'loginRedirect' => array('controller' => 'users', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'users', 'action' => 'login'),
+            'authError' => 'You can\'t access that page',
+            'authorize' => array('Controller')
         )
     );
+
+    /**
+     * isAuthorized
+     *
+     * @param $user
+     * @return bool
+     */
+    public function isAuthorized($user)
+    {
+        // Admin can access every action
+        if (isset($user['role']) && $user['role'] === 'admin') {
+            return true;
+        }
+        // Default deny
+        return false;
+    }
 
     /**
      * beforeFilter
      */
     public function beforeFilter()
     {
-        $this->Auth->allow('index', 'view');
+        // default access allowed for login
+        $this->Auth->allow('login');
+        // if you want non-auth users to be able to add users, include that here: $this->Auth->allow('login', 'add');
     }
 }
